@@ -7,7 +7,7 @@ const
 class Voice extends VexFlow.Voice{
     constructor(config){
         super(config);
-        _.extendSafe(this, 
+        _.extend(this, 
             {
                 chords : [],
             },
@@ -28,6 +28,7 @@ class Voice extends VexFlow.Voice{
             c = config[0];
         else
             c = new Chord(...config);
+        
         this.addTickable(c);
         this.chords.push(c);
         this.__private__.lastChord = c;

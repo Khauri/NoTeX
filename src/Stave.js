@@ -77,8 +77,24 @@ class Stave{
             this.measures[this.measures.length - 1];
     }
 
+    get firstMeasure(){
+        return this.measures[0];
+    }
+
     render(context){
+        // for the first measure of each line connect via a line and brace
+        let s = this.instrument.firstStave.firstMeasure, 
+            bar, 
+            line;
+
         this.measures.forEach(m => {
+            
+            if(s != m){
+                bar = new VexFlow.StaveConnector(s, m).setType(3);
+                bar.setContext(context).draw();
+                line = new VexFlow.StaveConnector(s, m).setType(1);
+                line.setContext(context).draw();
+            }
             m.render(context)
         })
     }

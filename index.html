@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+    <head>
+        <style>
+            body, html{
+                margin : 0;
+                padding : 0;
+                display : flex;
+                flex-direction : row;
+                width : 100%;
+                height : 100%;
+            }
+            body{
+                flex-wrap : wrap;
+            }
+            .section{
+                display : flex;
+                flex-direction : column;
+            }
+            .cont{
+                height : 100%;
+            }
+            .input{
+                flex : 1 1 35%;
+            }
+            .input_cont{
+                font-size : 1.3em;
+                flex : 100%;
+                white-space: pre;
+                overflow-wrap: normal;
+                overflow : auto;
+            }
+            .output{
+                flex : 1 1 65%;
+            }
+            .output_cont{
+                overflow : auto;
+                border : 1px solid rgba(0,0,0,.5);
+                background-color : gray;
+                padding : 20px;
+            }
+            .NoTeX_View, .NoTeX_View svg{
+                background-color : white;
+            }
+            .controls{
+                flex : 0 0 40px;
+                display : flex;
+                flex-direction : row;
+                align-items : center;
+            }
+            .err{
+                padding-left : 10px;
+                color : red;
+            }
+            .err.green{
+                color : green;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="input section">
+            <div class="controls">
+                <button class="reset_btn">Reset</button>
+                <div class="err green">OK</div>
+            </div>
+            <textarea class="input_cont cont" placeholder="input"  autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+        </div>
+        <div class="output section">
+            <div class="controls">Output</div>
+            <div class="output_cont cont"></div>
+        </div>
+        <script src="./dist/bundle.js"></script>
+    </body>
+</html>

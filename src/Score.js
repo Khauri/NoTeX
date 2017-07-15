@@ -49,10 +49,17 @@ class Score{
             key_signature : undefined,
             num_beats : 4,
             page : {
-                margin_top : 50,
-                margin_left : 50,
-                margin_bottom : 50,
-                margin_right : 50
+                fontFamily: "Times New Roman",
+                fontSize : 20,
+                format : "one_line",
+                width : 2550, // standard paper width
+                height : 3300, // standard paper height
+                scale : .25,
+                indent : 200, // amount to indent first stave
+                margin_top : 400,
+                margin_left : 200,
+                margin_bottom : 100,
+                margin_right : 200
             },
             renderer : null,
             scale : 1,
@@ -69,10 +76,12 @@ class Score{
             changes : 0,
             instruments : [],
             __private__ : {
+                y : 100,
                 events : {
                     "change" : [],
                     "note_added" : [],
-                    "note_removed" : []
+                    "note_removed" : [],
+                    "render" : []
                 },
                 lastInstr : null,
                 lastStave : null,
@@ -93,7 +102,9 @@ class Score{
         this.view.classList.add(`${this.baseClass}`);
         this.renderer = new VexFlow.Renderer(this.view, VexFlow.Renderer.Backends.SVG);
         this.context = this.renderer.getContext();
-        this.renderer.resize(500, 500);
+        let width = this.page.width * this.page.scale,
+            height = this.page.height * this.page.scale;
+        this.renderer.resize(width, height);
     }
 
     addEventListener(e, cb){
@@ -162,9 +173,15 @@ class Score{
      * Adds a measure for each stave
      */
     addMeasure(...config){
+        let bb = this.boundingBox;
         let i = this.latestInstrument;
+        let x = bb.left + this.page.indent * this.page.scale,
+            y = this.__private__.y,
+            width = this.__private__.width || 400;
+        // if x + width outside of bounding box(?)
         if(i)
-            i.addMeasure(...config);
+            i.addMeasure(x * this.scale, y * this.scale, width, ...config);
+        this.__private__.y += 100;
         return this;
     }
     /**
@@ -203,10 +220,18 @@ class Score{
     }
 
     render(){
+        console.log(this);
+        let bb = this.boundingBox;
         // the job of this renderer is just to draw the instruments
         this.instruments.forEach(i=>{
             i.render && i.render(this.context);
         })
+        // draw the title and what not
+        let metrics = this.context.measureText(this.title);
+        console.log(metrics);
+        this.context.setFont(this.page.fontFamily, this.page.fontSize);
+        this.context.setFillStyle("#000000");
+        this.context.fillText(this.title, bb.width/2, bb.top);
         return this;
     }
     /**
@@ -214,6 +239,24 @@ class Score{
      */
     toJSON(){
         return {};
+    }
+    /**
+     * Calculates x, y, width, and height
+     * including padding and margins
+     */
+    get boundingBox(){
+        let scale = this.page.scale;
+        let width = this.page.width - this.page.margin_left - this.page.margin_right,
+            height = this.page.height - this.page.margin_top - this.page.margin_bottom,
+            top = this.page.margin_top,
+            left = this.page.margin_left;
+
+        width *= scale;
+        height *= scale;
+        top *= scale; 
+        left *= scale;
+
+        return { width, height, top, left }
     }
 
     get latestInstrument(){
@@ -279,11 +322,10 @@ class Score{
                 num_beats       = s.num_beats || num_beats;
                 beat_value      = s.beat_value || beat_value;
 
-                score.addStave({clef, name, num_beats, beat_value})
+                score.addStave({clef, num_beats, beat_value})
                 // iterate through measures
                 s.measures.forEach(m =>{
-
-                    score.addMeasure(10, 40, 400); // I don't like unnamed parameters like this
+                    score.addMeasure({clef}); // I don't like unnamed parameters like this
                     // Iterate through voices
                     m.voices.forEach((v)=>{
                         clef            = v.clef || clef;
@@ -292,7 +334,7 @@ class Score{
                         
                         //s.VFVoices.push(voice);
 
-                        score.addVoice({num_beats, beat_value});
+                        score.addVoice({clef, num_beats, beat_value});
                         // iterate through notes
                         v.notes.forEach((n, note_index)=>{
                             if(!n || typeof n != "string")

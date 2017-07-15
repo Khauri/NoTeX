@@ -35,6 +35,11 @@ class Chord extends VexFlow.StaveNote{
         
         _.extendSafe(this, config)
         // request accidentals and dots and all that here
+        keys.forEach((key, index)=>{
+            if(key.acc){
+                this.addAccidental(index, new VexFlow.Accidental(key.acc))
+            }
+        });
     }
 }
 

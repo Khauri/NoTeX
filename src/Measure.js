@@ -13,7 +13,7 @@ const
 class Measure extends VexFlow.Stave{
     constructor(...props){
         super(...props)
-        _.extendSafe(this,
+        _.extend(this,
             {
                 voiceCount : 0,
                 voices : [],
@@ -68,7 +68,7 @@ class Measure extends VexFlow.Stave{
         this.addTimeSignature(this.time_signature || "4/4")
         this.draw();
         // draw the voices
-        new VexFlow.Formatter().joinVoices(this.voices).format(this.voices, 400);
+        new VexFlow.Formatter().joinVoices(this.voices).format(this.voices, 380);
         this.voices.forEach(v=>{
             v.draw(context, this);
         })

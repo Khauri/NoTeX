@@ -54,9 +54,9 @@ class Instrument{
      * @param {*} config 
      */
     addMeasure(...config){
-        this.staves.forEach(s=>{
+        let s = this.latestStave;
+        if(s)
             s.addMeasure(...config)
-        })
         return this;
     }
     /**
@@ -77,6 +77,7 @@ class Instrument{
     }
 
     render(context){
+
         this.staves.forEach(m => {
             m.render(context)
         });
@@ -84,6 +85,10 @@ class Instrument{
 
     get latestStave(){
         return this.__private__.lastStave;
+    }
+
+    get firstStave(){
+        return this.staves[0];
     }
 }
 

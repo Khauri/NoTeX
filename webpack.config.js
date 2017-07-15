@@ -5,7 +5,7 @@ const
 module.exports = {
     entry : "./index.js",
     output : {
-        filename : "Score.js",
+        filename : "bundle.js",
         path : path.join(__dirname, "dist")
     },
     devServer: {

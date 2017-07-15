@@ -16,6 +16,7 @@
     "webpack": "^3.2.0"
   },
   "dependencies": {
+    "json-stringify-pretty-compact": "^1.0.4",
     "vexflow": "^1.2.83"
   }
 }
